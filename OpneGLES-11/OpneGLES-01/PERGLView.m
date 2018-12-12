@@ -189,16 +189,36 @@ const GLubyte indices[] = {
 }
 
 - (void)setupVBO {
+    glGenVertexArraysOES(1, &_VAO);
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    self.VAO = VBO;
+    
+    glBindVertexArrayOES(_VAO);
+    glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), 0);
+    glEnableVertexAttribArray(_positionSlot);
+    
+    glVertexAttribPointer(_vertexColorSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), (GLvoid*)(3*sizeof(float)));
+    glEnableVertexAttribArray(_vertexColorSlot);
+    
+    glVertexAttribPointer(_textureCoor, 2, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), (GLvoid*)(6*sizeof(float)));
+    glEnableVertexAttribArray(_textureCoor);
     
     
-    glGenBuffers(1, &_lightVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, _lightVAO);
+    glGenVertexArraysOES(1, &_lightVAO);
+    GLuint lightVBO;
+    glGenBuffers(1, &lightVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+    glBindVertexArrayOES(_lightVAO);
+    glVertexAttribPointer(_lightPositionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), 0);
+    glEnableVertexAttribArray(_lightPositionSlot);
+    
+    glVertexAttribPointer(_lightVertexColorSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), (GLvoid*)(3*sizeof(float)));
+    glEnableVertexAttribArray(_lightVertexColorSlot);
+
 }
 
 - (void)setupEBO {
@@ -293,14 +313,7 @@ const GLubyte indices[] = {
     glBindVertexArrayOES(_VAO);
     glUseProgram(self.shader.programHandle);
 
-    glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), 0);
-    glEnableVertexAttribArray(_positionSlot);
-    
-    glVertexAttribPointer(_vertexColorSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), (GLvoid*)(3*sizeof(float)));
-    glEnableVertexAttribArray(_vertexColorSlot);
-    
-    glVertexAttribPointer(_textureCoor, 2, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), (GLvoid*)(6*sizeof(float)));
-    glEnableVertexAttribArray(_textureCoor);
+
     
     glUniform1i(_textureUniform, 1);
     glUniform1i(_leafTextureUniform, 0);
@@ -337,11 +350,6 @@ const GLubyte indices[] = {
     
     glBindVertexArrayOES(_lightVAO);
     glUseProgram(self.lightShader.programHandle);
-    glVertexAttribPointer(_lightPositionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), 0);
-    glEnableVertexAttribArray(_lightPositionSlot);
-    
-    glVertexAttribPointer(_lightPositionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(SceneVertex), (GLvoid*)(3*sizeof(float)));
-    glEnableVertexAttribArray(_lightPositionSlot);
     
   
     
